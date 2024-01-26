@@ -20,7 +20,7 @@ class PostController extends Controller
        
     public function store(Request $request)
     {   
-        dd($request->all());
+        //dd($request->all());
         $dataValidate=$request->validate([ 
             'title'=> 'required|string|max:255',
             'content'=>['required','string','max:10','lowercase'],
@@ -58,6 +58,7 @@ class PostController extends Controller
    
     public function destroy(Post $post)
     {
-        //
+        $post->delete();
+        return redirect(route('posts.index'));
     }
 }

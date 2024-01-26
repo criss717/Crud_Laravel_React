@@ -12,7 +12,7 @@ import { Inertia } from '@inertiajs/inertia'; // Agrega esta línea
 
 export default function TableReact({ posts }) {
 
-  const [edit,setIsEdit]=useState(false)
+  const [edit, setIsEdit] = useState(false)
 
   const handleEdit = (row) => {
     console.log(row);
@@ -31,21 +31,21 @@ export default function TableReact({ posts }) {
         id: "content", //id required if you use accessorFn instead of accessorKey
         header: "Content",
         Header: <i style={{ color: "red" }}>Content</i> //optional custom markup
-      },      
+      },
     ],
     []
   );
-  
+
 
   const table = useMaterialReactTable({
     data,
     columns,
-    enableRowActions:true, 
-    positionActionsColumn:'last',
-    onEditingRowSave:async({row,table})=>{         
+    enableRowActions: true,
+    positionActionsColumn: 'last',
+    onEditingRowSave:  ({ row, table }) => {
       const cambios = row._valuesCache; //en esta propiedad guarda los cambios el row             
-      try {          
-        await Inertia.patch(route('posts.update', {id:row.original.id}), cambios); // Asegúrate de reemplazar 'id' con la lógica correcta para obtener el ID de la fila
+      try {
+         Inertia.patch(route('posts.update', { id: row.original.id }), cambios); // Asegúrate de reemplazar 'id' con la lógica correcta para obtener el ID de la fila
         table.setEditingRow(null);
       } catch (error) {
         console.error('Error al guardar:', error);
@@ -53,18 +53,25 @@ export default function TableReact({ posts }) {
       }
     },
     
-    renderRowActionMenuItems: ({ row ,table}) => [
-      <MenuItem key="edit" onClick={() => {          
-          table.setEditingRow(row)          
-
-        }}>
+    renderRowActionMenuItems: ({ row, table }) => [
+      <MenuItem key="edit" onClick={() => {
+        table.setEditingRow(row)
+      }}>
         Edit
       </MenuItem>,
-      <MenuItem key="delete" onClick={() => console.info('Delete')}>
+      <MenuItem key="delete" onClick={async() => {                   
+        try {
+          await Inertia.delete(route('posts.destroy', { id: row.original.id })); // Asegúrate de reemplazar 'id' con la lógica correcta para obtener el ID de la fila
+         
+        } catch (error) {
+          console.error('Error al borrar:', error);
+          // Manejar errores, por ejemplo, mostrar un mensaje al usuario
+        }
+      }}>
         Delete
       </MenuItem>,
     ],
-    
+
   });
 
   return <MaterialReactTable table={table} />;

@@ -4,8 +4,7 @@ import Authenticated from '@/Layouts/AuthenticatedLayout';
 import { useForm } from '@inertiajs/react';
 import React from 'react'
 
-const Index = ({auth,posts}) => {
-    console.log(posts);
+const Index = ({auth,posts}) => {    
     const {data,setData,post,processing,reset,errors}=useForm({
         title:'',
         content:'',        
@@ -17,8 +16,7 @@ const Index = ({auth,posts}) => {
     }
 
     const handlerSubmit =(e)=>{
-        e.preventDefault();
-        console.log(data)
+        e.preventDefault();       
         post(route('posts.store'),{onSuccess:()=>reset()}) // esto lo hace inertia manda una solicitud post a la ruta posts.store
 
     }    
