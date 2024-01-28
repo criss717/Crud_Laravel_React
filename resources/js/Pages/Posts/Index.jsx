@@ -5,7 +5,7 @@ import { useForm } from '@inertiajs/react';
 import React from 'react'
 
 const Index = ({auth,posts}) => {    
-    const {data,setData,post,processing,reset,errors}=useForm({
+    const {data,setData,post,patch,delete:destroy,processing,reset,errors}=useForm({
         title:'',
         content:'',        
     })
@@ -90,7 +90,7 @@ const Index = ({auth,posts}) => {
                    
                 </div>
                 <div className="w-2/3">
-                    <TableReact posts={posts}/>
+                    <TableReact posts={posts} patch={patch} destroy={destroy} setData={setData}/>
                 </div>
             </div>
             

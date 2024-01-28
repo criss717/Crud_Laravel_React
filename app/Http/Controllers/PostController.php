@@ -43,7 +43,7 @@ class PostController extends Controller
     {   
         
         //dd($request->get('_valuesCache'),$post);
-        //dd($post);
+        dd($post,$request);
         
         //dd($request, $post);
         $dataValidate=$request->validate([ 

@@ -10,7 +10,8 @@ import {
 import { Inertia } from '@inertiajs/inertia'; // Agrega esta línea
 
 
-export default function TableReact({ posts }) {
+
+export default function TableReact({ posts, patch,destroy,setData }) {
 
   const [edit, setIsEdit] = useState(false)
 
@@ -42,27 +43,37 @@ export default function TableReact({ posts }) {
     columns,
     enableRowActions: true,
     positionActionsColumn: 'last',
-    onEditingRowSave:  ({ row, table }) => {
-      const cambios = row._valuesCache; //en esta propiedad guarda los cambios el row             
+    onEditingRowSave:async({ row, table }) => {
+      
       try {
-         Inertia.patch(route('posts.update', { id: row.original.id }), cambios); // Asegúrate de reemplazar 'id' con la lógica correcta para obtener el ID de la fila
+        const cambios = row._valuesCache; //en esta propiedad guarda los cambios el row  
+        console.log(cambios)
+        //Inertia.patch(route('posts.update', { id: row.original.id }), cambios); // Asegúrate de reemplazar 'id' con la lógica correcta para obtener el ID de la fila
+        const setDataPromise = new Promise((resolve) => {
+          setData({ ...cambios });
+          resolve();
+        });
+    
+        // Espera a que setDataPromise se resuelva
+        await setDataPromise;
+        await patch((route('posts.update', {id:row.original.id,title:'perro'})),{title:'loco'})
         table.setEditingRow(null);
       } catch (error) {
         console.error('Error al guardar:', error);
         // Manejar errores, por ejemplo, mostrar un mensaje al usuario
       }
     },
-    
+
     renderRowActionMenuItems: ({ row, table }) => [
       <MenuItem key="edit" onClick={() => {
         table.setEditingRow(row)
       }}>
         Edit
       </MenuItem>,
-      <MenuItem key="delete" onClick={async() => {                   
+      <MenuItem key="delete" onClick={ () => {
         try {
-          await Inertia.delete(route('posts.destroy', { id: row.original.id })); // Asegúrate de reemplazar 'id' con la lógica correcta para obtener el ID de la fila
-         
+          //Inertia.delete(route('posts.destroy', { id: row.original.id })); // Asegúrate de reemplazar 'id' con la lógica correcta para obtener el ID de la fila
+          destroy(route('posts.destroy',{ id: row.original.id }))
         } catch (error) {
           console.error('Error al borrar:', error);
           // Manejar errores, por ejemplo, mostrar un mensaje al usuario
